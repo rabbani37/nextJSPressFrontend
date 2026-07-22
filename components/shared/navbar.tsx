@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import {  LogOut, Settings, User } from 'lucide-react';
+import { LogOut, Settings, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -11,6 +11,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { use } from 'react';
+import logOut from '@/service/logout';
 
 // Navigation items configuration
 const navItems = [
@@ -27,10 +29,47 @@ const userMenuItems = [
   { label: 'Settings', icon: Settings, action: 'settings' },
 ];
 
-export function Navbar() {
-  const handleUserMenuAction = (action: string) => {
+
+
+type TUser = {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: {
+    id?: string;
+    name: string;
+    email: string;
+    active_status: string;
+    role: string;
+    created_at: string;
+    updated_at: string;
+    profile: {
+      id?: string;
+      profile_photo: string;
+      bio: string;
+      user_id: string;
+      created_at: string;
+      updated_at: string;
+    }
+  }
+
+}
+
+type TNavbarProps = { user: TUser }
+
+
+
+
+export function Navbar(user: TNavbarProps) {
+  const handleUserMenuAction = async (action: string) => {
     console.log(`User clicked: ${action}`);
     // Add your handler logic here
+
+    if (action === "logout") {
+      await logOut()
+    }
+
+
   };
 
   return (
@@ -62,7 +101,7 @@ export function Navbar() {
             <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
               <Avatar className="h-10 w-10">
                 <AvatarImage src="" alt="User" />
-                <AvatarFallback>JD</AvatarFallback>
+                <AvatarFallback><small>Profiel</small></AvatarFallback>
               </Avatar>
             </Button>
           </DropdownMenuTrigger>
@@ -72,11 +111,11 @@ export function Navbar() {
             <div className="flex items-center gap-2 px-2 py-1.5">
               <Avatar className="h-8 w-8">
                 <AvatarImage src="" alt="User" />
-                <AvatarFallback>JD</AvatarFallback>
+                <AvatarFallback><small>Profiel</small></AvatarFallback>
               </Avatar>
               <div className="flex flex-col gap-0.5">
-                <p className="text-sm font-medium">John Doe</p>
-                <p className="text-xs text-muted-foreground">john@example.com</p>
+                <p className="text-sm font-medium">{user?.user.data?.name || "No Name"}</p>
+                <p className="text-xs text-muted-foreground">{user?.user.data?.email || "No Email"}</p>
               </div>
             </div>
 
@@ -99,7 +138,9 @@ export function Navbar() {
             <DropdownMenuSeparator />
 
             {/* Logout */}
-            <DropdownMenuItem onClick={() => handleUserMenuAction('logout')}>
+            <DropdownMenuItem onClick={ () => {
+              handleUserMenuAction('logout')
+            }}>
               <LogOut className="mr-2 h-4 w-4" />
               <span>Logout</span>
             </DropdownMenuItem>
