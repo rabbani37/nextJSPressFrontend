@@ -11,14 +11,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { use } from 'react';
+import { useEffect, useState } from 'react';
 import logOut from '@/service/logout';
+import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 // Navigation items configuration
 const navItems = [
   { label: 'Home', href: '/' },
-  { label: 'About', href: '/about' },
-  { label: 'Features', href: '/features' },
+  { label: 'Dashbord', href: '/dashbord' },
+  { label: 'News', href: '/news' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'Contact', href: '/contact' },
 ];
@@ -61,16 +63,27 @@ type TNavbarProps = { user: TUser }
 
 
 export function Navbar(user: TNavbarProps) {
+  const [isLogout, setIsLogout] = useState(false)
+  const router = useRouter()
+
   const handleUserMenuAction = async (action: string) => {
     console.log(`User clicked: ${action}`);
     // Add your handler logic here
 
     if (action === "logout") {
-      await logOut()
+      await logOut();
+      setIsLogout(true)
+    }
+  };
+
+  useEffect(() => {
+
+    if (isLogout) {
+      toast.success("User Logged out Successfully");
+      router.push("/login")
     }
 
-
-  };
+  }, [isLogout, router])
 
   return (
     <nav className="border-b bg-background">
@@ -95,7 +108,9 @@ export function Navbar(user: TNavbarProps) {
         </div>
 
         {/* User Dropdown */}
-        <DropdownMenu>
+        {user.user.success ?(
+           <DropdownMenu>
+
 
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
@@ -138,7 +153,7 @@ export function Navbar(user: TNavbarProps) {
             <DropdownMenuSeparator />
 
             {/* Logout */}
-            <DropdownMenuItem onClick={ () => {
+            <DropdownMenuItem onClick={() => {
               handleUserMenuAction('logout')
             }}>
               <LogOut className="mr-2 h-4 w-4" />
@@ -147,6 +162,7 @@ export function Navbar(user: TNavbarProps) {
           </DropdownMenuContent>
 
         </DropdownMenu>
+        ) : <Button><Link href={"/login"}>Login</Link></Button>}
       </div>
     </nav>
   );
