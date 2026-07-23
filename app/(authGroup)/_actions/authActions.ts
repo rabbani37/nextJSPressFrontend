@@ -26,7 +26,7 @@ export const loginAction = async (previouState: TLoginState, formData: FormData)
         body: JSON.stringify(payload)
     });
 
-    const result= await res.json();
+    const result = await res.json();
 
     if (result.success) {
         const cookieStore = await cookies()
@@ -43,8 +43,42 @@ export const loginAction = async (previouState: TLoginState, formData: FormData)
             sameSite: "lax"
         });
 
-        redirect("/dashbord","replace")
-    }
-
+        redirect("/dashbord", "replace")
+    };
     return result
+};
+
+
+
+
+
+type FormState = {
+    message: string;
+} | null;
+export const registerAction = async (previouState: FormState, formData: FormData) => {
+
+
+    const name = formData.get("name");
+    const email = formData.get("email")
+    const password = formData.get("password");
+    const conformPassword = formData.get("confirmPassword");
+
+    if (password !== conformPassword) {
+        throw new Error("Password dosen't matched")
+    }
+    const payload = {
+        name,
+        email, password
+    };
+
+    const res = await fetch(`${process.env.BACKEND_APP_URL}/api/users/register`, {
+        method: "POST",
+        headers: {
+            "content-type": "application/json"
+        },
+        body: JSON.stringify(payload)
+    });
+
+    const result = await res.json()
+    return result;
 }

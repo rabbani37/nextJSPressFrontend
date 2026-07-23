@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { loginAction } from '../_actions/authActions'
 import { useActionState, useEffect } from 'react'
 import { toast } from 'sonner'
+import { FieldDescription } from '@/components/ui/field'
 // import { useRouter } from 'next/navigation'
 
 
@@ -25,10 +26,10 @@ const LoginForm = () => {
             toast.error(state.message || "Login Failed")
 
         }
-
-
-
     }, [state])
+
+
+
     return (
         <form action={action} className='space-y-4'>
 
@@ -39,9 +40,13 @@ const LoginForm = () => {
                 <Button type='submit'>
                     {pending ? "submiting..." : " Login"}
                 </Button>
+                <FieldDescription className="text-center">
+                    Have not an account? Please <a href='/register' > Register </a>
+                </FieldDescription>
             </Card>
         </form>
     )
+
 }
 
 export default LoginForm
