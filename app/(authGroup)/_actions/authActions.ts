@@ -2,6 +2,8 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import jwt, { JwtPayload } from "jsonwebtoken"
+
 
 type TLoginState = {
     success: true;
@@ -42,9 +44,21 @@ export const loginAction = async (previouState: TLoginState, formData: FormData)
             maxAge: 60 * 60 * 24 * 7,
             sameSite: "lax"
         });
+        // redirect("/dashbord", "replace")
+        const decodeToken = jwt.decode(result.data.accessToken) as JwtPayload
 
-        redirect("/dashbord", "replace")
+        if (decodeToken.role === "USER") {
+            redirect("/dashbord")
+        }
+        else if(decodeToken.role === "AUTHOR"){
+            redirect("/author-dashbord")
+        }
+        else if(decodeToken.role === "ADMIN"){
+            redirect("/admin-dashbord")
+        }
     };
+
+
     return result
 };
 
