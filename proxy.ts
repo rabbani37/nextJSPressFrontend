@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { JwtPayload } from "jsonwebtoken"
 import { jwtUtils } from './utilis/jwt';
-import { cookies } from 'next/headers';
+import { getNewAccessToken } from './service/refreshToken';
 
 
 
@@ -13,20 +13,42 @@ export async function proxy(request: NextRequest) {
     const pathName = request.nextUrl.pathname;
 
 
-    const accessToken = request.cookies.get("accessToken")?.value;
-    const decodeToken = accessToken ? jwtUtils.tokenVerify(accessToken, process.env.JWT_ACCESS_SECRET as string) : null;
+    
+    let accessToken = request.cookies.get("accessToken")?.value;
+    const refreshToken = request.cookies.get("refreshToken")?.value
+  
+
+    let decodeAccessToken = accessToken ? jwtUtils.tokenVerify(accessToken, process.env.JWT_ACCESS_SECRET as string) : null;
+
+    const decodeRefreshToken = refreshToken ? jwtUtils.tokenVerify(refreshToken, process.env.JWT_REFRESH_SECRET as string) : null;
+
+    if (!decodeAccessToken?.success && decodeRefreshToken?.success) {
+        const result = await getNewAccessToken();
+        if (result.success) {
+            const newAccessToken = result.data.accessToken;
+            request.cookies.set("accessToken", newAccessToken, );
+
+            accessToken = newAccessToken;
+            decodeAccessToken = jwtUtils.tokenVerify(accessToken!, process.env.JWT_ACCESS_SECRET as string);
+        }
+    }
+
+
 
     let userRole = null;
 
-    if (decodeToken?.success) {
-        userRole = (decodeToken.data as JwtPayload).role;
+    if (decodeAccessToken?.success) {
+        userRole = (decodeAccessToken.data as JwtPayload).role;
     }
 
-    const cookieStore = await cookies()
-    if (!decodeToken?.success) {
-        cookieStore.delete("accessToken")
-        return NextResponse.redirect(new URL("/login", request.url));
+
+
+    if (!decodeAccessToken?.success) {
+        request.cookies.delete("accessToken")
+        // return NextResponse.redirect(new URL("/login", request.url));
     }
+
+
 
     // user already logged in. But trying to accecss login and register routes. now redirect to dashbord, root home page
     if (accessToken && AUTH_ROUTER.includes(pathName)) {
@@ -68,7 +90,7 @@ export async function proxy(request: NextRequest) {
 
     }
     // return NextResponse.redirect(new URL('/', request.url))
-    console.log(userRole);
+    // console.log(userRole);
     return NextResponse.next()
 
 
