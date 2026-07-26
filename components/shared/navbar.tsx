@@ -20,9 +20,10 @@ import { useRouter } from 'next/navigation';
 const navItems = [
   { label: 'Home', href: '/' },
   { label: 'Dashbord', href: '/dashbord' },
-  { label: 'News', href: '/news' },
   { label: 'Pricing', href: '/pricing' },
   { label: 'Contact', href: '/contact' },
+  { label: 'News', href: '/news' },
+  { label: 'Premium', href: '/premium' },
 ];
 
 // User dropdown menu items
@@ -108,60 +109,60 @@ export function Navbar(user: TNavbarProps) {
         </div>
 
         {/* User Dropdown */}
-        {user.user.success ?(
-           <DropdownMenu>
+        {user.user.success ? (
+          <DropdownMenu>
 
 
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
-              <Avatar className="h-10 w-10">
-                <AvatarImage src="" alt="User" />
-                <AvatarFallback><small>Profiel</small></AvatarFallback>
-              </Avatar>
-            </Button>
-          </DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-10 w-10 rounded-full p-0">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src="" alt="User" />
+                  <AvatarFallback><small>Profiel</small></AvatarFallback>
+                </Avatar>
+              </Button>
+            </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end" className="w-56">
-            {/* User Info */}
-            <div className="flex items-center gap-2 px-2 py-1.5">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src="" alt="User" />
-                <AvatarFallback><small>Profiel</small></AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col gap-0.5">
-                <p className="text-sm font-medium">{user?.user.data?.name || "No Name"}</p>
-                <p className="text-xs text-muted-foreground">{user?.user.data?.email || "No Email"}</p>
+            <DropdownMenuContent align="end" className="w-56">
+              {/* User Info */}
+              <div className="flex items-center gap-2 px-2 py-1.5">
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src="" alt="User" />
+                  <AvatarFallback><small>Profiel</small></AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col gap-0.5">
+                  <p className="text-sm font-medium">{user?.user.data?.name || "No Name"}</p>
+                  <p className="text-xs text-muted-foreground">{user?.user.data?.email || "No Email"}</p>
+                </div>
               </div>
-            </div>
 
-            <DropdownMenuSeparator />
+              <DropdownMenuSeparator />
 
-            {/* Menu Items */}
-            {userMenuItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <DropdownMenuItem
-                  key={item.action}
-                  onClick={() => handleUserMenuAction(item.action)}
-                >
-                  <Icon className="mr-2 h-4 w-4" />
-                  <span>{item.label}</span>
-                </DropdownMenuItem>
-              );
-            })}
+              {/* Menu Items */}
+              {userMenuItems.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <DropdownMenuItem
+                    key={item.action}
+                    onClick={() => handleUserMenuAction(item.action)}
+                  >
+                    <Icon className="mr-2 h-4 w-4" />
+                    <span>{item.label}</span>
+                  </DropdownMenuItem>
+                );
+              })}
 
-            <DropdownMenuSeparator />
+              <DropdownMenuSeparator />
 
-            {/* Logout */}
-            <DropdownMenuItem onClick={() => {
-              handleUserMenuAction('logout')
-            }}>
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Logout</span>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
+              {/* Logout */}
+              <DropdownMenuItem onClick={() => {
+                handleUserMenuAction('logout')
+              }}>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Logout</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
 
-        </DropdownMenu>
+          </DropdownMenu>
         ) : <Button><Link href={"/login"}>Login</Link></Button>}
       </div>
     </nav>

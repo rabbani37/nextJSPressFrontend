@@ -53,7 +53,7 @@ export async function proxy(request: NextRequest) {
     // user already logged in. But trying to accecss login and register routes. now redirect to dashbord, root home page
     if (accessToken && AUTH_ROUTER.includes(pathName)) {
         if (userRole === "USER") {
-            return NextResponse.redirect(new URL("/dashbord", request.url));
+            // return NextResponse.redirect(new URL("/dashbord", request.url));
         }
         else if (userRole === "ADMIN") {
             return NextResponse.redirect(new URL("/admin-dashbord", request.url));
