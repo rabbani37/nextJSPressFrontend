@@ -1,8 +1,10 @@
 "use server"
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export const getPremiumNews = async () => {
+export const subscribePremium = async () => {
+
 
     const cookieStore = await cookies();
     const accessToken = cookieStore.get("accessToken")?.value;
@@ -18,18 +20,17 @@ export const getPremiumNews = async () => {
 
 
 
-    const res = await fetch(`${process.env.BACKEND_APP_URL}/api/premium`, {
+    const res = await fetch(`${process.env.BACKEND_APP_URL}/api/subscription/checkout`, {
+        method: "POST",
         headers: {
             Cookie: `accessToken=${accessToken}`,
-
-        },
-        cache: "force-cache",
-        next: {
-            revalidate: 60 * 60 * 24, // 1days
-            tags: ["premium-posts"]
         }
     });
 
     const result = await res.json();
+
+    if (result.success && result.data.paymentUrl) {
+        redirect(result.data.paymentUrl)
+    }
     return result;
 }

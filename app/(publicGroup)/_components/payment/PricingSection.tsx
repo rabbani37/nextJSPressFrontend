@@ -2,19 +2,14 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { CheckIcon } from "lucide-react"
 import { SubscribeButton } from "./SubscripeButton"
+import { getSubscription } from "../../_actions/getSubscription"
 
 export const PricingSection = async () => {
 
-    const statusResult = {
-        success: true,
-        data: {
-            isSubcribed: true,
-            currentPeriodEnd: new Date().toISOString(),
-        }
-    }
+    const statusResult = await getSubscription()
 
     const isActive = Boolean(
-        statusResult?.success && statusResult?.data.isSubcribed
+        statusResult?.success && statusResult.data?.isSubscribed
     )
 
 
@@ -47,8 +42,8 @@ export const PricingSection = async () => {
                             Support independent journalism
                         </li>
                     </ul>
-                    { <SubscribeButton />}
-                    
+                    {!isActive && <SubscribeButton />}
+
                 </CardContent>
             </Card>
         </div>

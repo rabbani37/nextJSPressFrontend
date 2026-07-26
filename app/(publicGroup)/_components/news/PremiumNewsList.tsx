@@ -6,7 +6,7 @@ import { NewsCard } from "./NewsCard";
 export default async function PremiumNewsList() {
     const result = await getPremiumNews()
 
-    console.log(result);
+   
     if (!result.success || !result.data?.length) {
         return (
             <p className="py-12 text-center text-muted-foreground">

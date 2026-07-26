@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { JwtPayload } from "jsonwebtoken"
 import { jwtUtils } from './utilis/jwt';
 import { getNewAccessToken } from './service/refreshToken';
+import { constants } from 'buffer';
+import { getSubscription } from './app/(publicGroup)/_actions/getSubscription';
 
 
 
@@ -13,10 +15,10 @@ export async function proxy(request: NextRequest) {
     const pathName = request.nextUrl.pathname;
 
 
-    
+
     let accessToken = request.cookies.get("accessToken")?.value;
     const refreshToken = request.cookies.get("refreshToken")?.value
-  
+
 
     let decodeAccessToken = accessToken ? jwtUtils.tokenVerify(accessToken, process.env.JWT_ACCESS_SECRET as string) : null;
 
@@ -26,7 +28,7 @@ export async function proxy(request: NextRequest) {
         const result = await getNewAccessToken();
         if (result.success) {
             const newAccessToken = result.data.accessToken;
-            request.cookies.set("accessToken", newAccessToken, );
+            request.cookies.set("accessToken", newAccessToken,);
 
             accessToken = newAccessToken;
             decodeAccessToken = jwtUtils.tokenVerify(accessToken!, process.env.JWT_ACCESS_SECRET as string);
@@ -78,7 +80,6 @@ export async function proxy(request: NextRequest) {
 
 
 
-
     if (pathName.startsWith("/dashbord") && userRole !== "USER") {
         return NextResponse.redirect(new URL("/not-found", request.url));
     }
@@ -89,10 +90,30 @@ export async function proxy(request: NextRequest) {
         return NextResponse.redirect(new URL("/not-found", request.url));
 
     }
+
+
+    // const subscriptionStatus = await getSubscription();
+    // const isActive = Boolean(subscriptionStatus.success && subscriptionStatus.data?.isSubscribed);
+
+    if (pathName === '/premium') {
+        const subscriptionStatus = await getSubscription();
+        const isActive = Boolean(subscriptionStatus.success && subscriptionStatus.data?.isSubscribed);
+
+        if (!isActive) {
+            return NextResponse.redirect(new URL("/payment", request.url));
+        }
+    }
+
+    // if (pathName === '/payment') {
+
+    //     if (isActive) {
+    //         return NextResponse.redirect(new URL("/premium", request.url));
+    //     }
+    // }
+
     // return NextResponse.redirect(new URL('/', request.url))
     // console.log(userRole);
     return NextResponse.next()
-
 
 
 
