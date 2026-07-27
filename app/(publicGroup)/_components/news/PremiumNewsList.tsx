@@ -3,10 +3,14 @@ import { getPremiumNews } from "../../_actions/getPremiumNews";
 import { NewsCard } from "./NewsCard";
 
 
-export default async function PremiumNewsList() {
-    const result = await getPremiumNews()
+export default async function PremiumNewsList({ searchParams }: { searchParams?: Promise<{ [key: string]: string | string[] | undefined }> }) {
 
-   
+    const search = await searchParams;
+
+
+    const result = await getPremiumNews({search })
+
+
     if (!result.success || !result.data?.length) {
         return (
             <p className="py-12 text-center text-muted-foreground">
@@ -18,7 +22,7 @@ export default async function PremiumNewsList() {
     return (
         <div className="space-y-8">
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {result?.data.map((post:IPost) => (
+                {result?.data.map((post: IPost) => (
                     <NewsCard key={post.id} post={post} />
                 ))}
             </div>

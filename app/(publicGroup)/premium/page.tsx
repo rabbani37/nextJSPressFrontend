@@ -2,13 +2,18 @@ import React, { Suspense } from 'react'
 import PremiumNewsList from '../_components/news/PremiumNewsList'
 import { NewsSkeleton } from '../_components/news/NewsSkeleton'
 
-const PremiumPage = () => {
+const PremiumPage = async ({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) => {
+
+
+
+
+
+
+
   return (
     <div className='mx-auto max-w-7xl space-y-6 px-4 py-10  sm:px-6 lg:px-8'>
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-
-
 
         <div>
           <h1 className="text-2xl font-semibold">Premium News</h1>
@@ -18,10 +23,10 @@ const PremiumPage = () => {
         </div>
 
 
-      </div> 
+      </div>
 
       <Suspense fallback={<NewsSkeleton />}>
-        <PremiumNewsList  />
+        <PremiumNewsList searchParams={searchParams} />
       </Suspense>
 
     </div>

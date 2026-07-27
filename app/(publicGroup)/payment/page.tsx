@@ -2,12 +2,10 @@ import { Suspense } from "react";
 import { PricingSectionLoader } from "../_components/payment/PricingSectionLoader";
 import { PricingSection } from "../_components/payment/PricingSection";
 
-const PaymentPage = async ({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) => {
+const PaymentPage = async () => {
 
 
-  const searchItems = await searchParams
 
-  console.log("searchItems", searchItems);
 
   // const {tags}  = searchItems;
   // const parsTags = JSON.parse(tags as string)
