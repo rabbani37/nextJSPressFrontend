@@ -2,7 +2,17 @@ import { Suspense } from "react";
 import { PricingSectionLoader } from "../_components/payment/PricingSectionLoader";
 import { PricingSection } from "../_components/payment/PricingSection";
 
-const PaymentPage = () => {
+const PaymentPage = async ({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) => {
+
+
+  const searchItems = await searchParams
+
+  console.log("searchItems", searchItems);
+
+  // const {tags}  = searchItems;
+  // const parsTags = JSON.parse(tags as string)
+  // console.log(parsTags[1]);
+
   return (
     <div className="mx-auto max-w-3xl space-y-8 px-4 py-10 sm:px-6 lg:px-8">
       <div className="space-y-2 text-center">

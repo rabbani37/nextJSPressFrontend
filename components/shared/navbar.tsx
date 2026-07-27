@@ -20,7 +20,7 @@ import { useRouter } from 'next/navigation';
 const navItems = [
   { label: 'Home', href: '/' },
   { label: 'Dashbord', href: '/dashbord' },
-  { label: 'Pricing', href: '/pricing' },
+  { label: 'Pricing', href: '/payment' },
   { label: 'Contact', href: '/contact' },
   { label: 'News', href: '/news' },
   { label: 'Premium', href: '/premium' },
